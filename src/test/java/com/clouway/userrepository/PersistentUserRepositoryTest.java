@@ -7,6 +7,10 @@ import com.clouway.userrepository.core.Contact;
 import com.clouway.userrepository.core.Users;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -16,6 +20,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class PersistentUserRepositoryTest {
 
+    private Connection connection;
+    private Statement statement;
     private List<Users> usersList;
     private List<Contact> contactList;
     private List<Address> addressList;
@@ -23,7 +29,15 @@ public class PersistentUserRepositoryTest {
     private PersistentUserRepository userRepository = new PersistentUserRepository(provider,"task3","postgres","123");
 
     @Test
-    public void happyPath() throws Exception {
+    public void happyPath() throws SQLException, ClassNotFoundException {
+        Class.forName("org.postgresql.Driver");
+        connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/task3", "postgres", "123");
+        statement = connection.createStatement();
+        statement.executeUpdate("TRUNCATE TABLE Users, Contact, Address;");
+        statement.executeUpdate("INSERT INTO Users VALUES(100,'Jon');");
+        statement.executeUpdate("INSERT INTO Contact VALUES(100,878540123);");
+        statement.executeUpdate("INSERT INTO Address VALUES(100,'str.Ams №123');");
+
         userRepository.getUsersContent();
         userRepository.getContactContent();
         userRepository.getAddressContent();

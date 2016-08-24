@@ -5,14 +5,14 @@ import java.sql.Date;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class Trip implements TripRepository {
+public class Destination implements DestinationRepository {
 
     private Long egn;
     private Date arrival;
     private Date departing;
     private String cityName;
 
-    public Trip(Long egn, Date arrival, Date departing, String cityName) {
+    public Destination(Long egn, Date arrival, Date departing, String cityName) {
         this.egn = egn;
         this.arrival = arrival;
         this.departing = departing;
@@ -53,7 +53,7 @@ public class Trip implements TripRepository {
 
     @Override
     public String toString() {
-        return "Trip{" +
+        return "Destination{" +
                 "egn=" + egn +
                 ", arrival=" + arrival +
                 ", departing=" + departing +

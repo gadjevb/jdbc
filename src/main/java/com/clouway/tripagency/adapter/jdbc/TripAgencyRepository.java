@@ -1,22 +1,12 @@
 package com.clouway.tripagency.adapter.jdbc;
 
-import com.clouway.tripagency.core.Person;
-import com.clouway.tripagency.core.Trip;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class TripAgencyRepository {
 
-    private List<Person> personList;
-    private List<Trip> tripList;
+    /*private List<Person> personList;
+    private List<Destination> tripList;
     private List<String> citiesList;
     private Connection connection;
     private Statement statement;
@@ -60,7 +50,7 @@ public class TripAgencyRepository {
         tripList = new ArrayList();
         resultSet = statement.executeQuery("SELECT * FROM TRIP;");
         while (resultSet.next()) {
-            Trip trip = new Trip(resultSet.getLong(1), resultSet.getDate(2), resultSet.getDate(3), resultSet.getString(4));
+            Destination trip = new Destination(resultSet.getLong(1), resultSet.getDate(2), resultSet.getDate(3), resultSet.getString(4));
             tripList.add(trip);
         }
     }
@@ -113,7 +103,7 @@ public class TripAgencyRepository {
         return personList;
     }
 
-    public List<Trip> getTripList() {
+    public List<Destination> getDestinationList() {
         return tripList;
     }
 
@@ -131,5 +121,5 @@ public class TripAgencyRepository {
         if(resultSet != null){
             resultSet.close();
         }
-    }
+    }*/
 }

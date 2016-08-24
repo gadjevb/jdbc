@@ -3,7 +3,7 @@ package com.clouway.tripagency.core;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class Person implements PeopleRepository {
+public class Person implements PersonRepository {
 
     private String name;
     private Long egn;

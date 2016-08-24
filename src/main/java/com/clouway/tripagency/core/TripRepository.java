@@ -1,19 +1,15 @@
 package com.clouway.tripagency.core;
 
-import java.sql.Date;
-
 /**
- * @author Borislav Gadjev <gadjevb@gmail.com>
+ * Created by borislav on 24.08.16.
  */
 public interface TripRepository {
 
-    void setEgn(Long egn);
-    void setArrival(Date arrival);
-    void setDeparting(Date departing);
-    void setCityName(String cityName);
-    Long getEgn();
-    Date getArrival();
-    Date getDeparting();
-    String getCityName();
+    void insertTrip(Long egn, String arrival, String department, String city);
+    void updateTrip(Long egn, String arrival, String department, String city);
+    void getTripContent();
+    void getMostVisitedCities();
+    void deleteTableContent();
+    void deleteTable();
 
 }
