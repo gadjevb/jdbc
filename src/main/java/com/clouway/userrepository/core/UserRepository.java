@@ -8,5 +8,6 @@ public interface UserRepository {
     void getUsersContent();
     void getContactContent();
     void getAddressContent();
+    void close();
 
 }

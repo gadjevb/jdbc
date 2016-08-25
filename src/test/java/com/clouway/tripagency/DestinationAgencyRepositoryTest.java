@@ -56,7 +56,7 @@ public class DestinationAgencyRepositoryTest {
     }
 
     @Test
-    public void getPersonsByLetter() {
+    public void personsByLetter() {
         trip.deleteTableContent();
         people.deleteTableContent();
         people.insertPerson("Jon",8503124562l,31,"jon@gmail.com");
@@ -68,7 +68,7 @@ public class DestinationAgencyRepositoryTest {
     }
 
     @Test
-    public void getPeopleInTheSameCity() {
+    public void peopleInTheSameCity() {
         trip.deleteTableContent();
         people.deleteTableContent();
         people.insertPerson("Jon",8503124562l,31,"jon@gmail.com");

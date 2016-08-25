@@ -5,8 +5,8 @@ package com.clouway.tripagency.core;
  */
 public class Person implements PersonRepository {
 
-    private String name;
-    private Long egn;
+    private String name;//todo public final
+    private Long egn;// wrap in UID
     private Integer age;
     private String email;
 

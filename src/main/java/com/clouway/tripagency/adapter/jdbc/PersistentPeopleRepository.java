@@ -101,15 +101,19 @@ public class PersistentPeopleRepository implements PeopleRepository {
         }
     }
 
-    public void close() throws Exception {
-        if(connection != null){
-            connection.close();
-        }
-        if(statement != null){
-            statement.close();
-        }
-        if(resultSet != null){
-            resultSet.close();
+    public void close() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

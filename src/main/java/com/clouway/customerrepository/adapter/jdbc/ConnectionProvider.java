@@ -1,6 +1,6 @@
-package com.clouway.tripagency.adapter.jdbc;
+package com.clouway.customerrepository.adapter.jdbc;
 
-import com.clouway.tripagency.core.Provider;
+import com.clouway.customerrepository.core.Provider;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,15 +9,12 @@ import java.sql.SQLException;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class ConnectionProvider implements Provider<Connection> {
+public class ConnectionProvider implements Provider {
 
     private Connection connection;
 
-    public ConnectionProvider() {
-    }
-
     @Override
-    public Connection get() {
+    public Connection getConnection(String database, String user, String password) {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/" + database, user, password);
