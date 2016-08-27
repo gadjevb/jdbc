@@ -12,8 +12,14 @@ import java.sql.SQLException;
 public class ConnectionProvider implements Provider<Connection> {
 
     private Connection connection;
+    private String database;
+    private String user;
+    private String password;
 
-    public ConnectionProvider() {
+    public ConnectionProvider(String database, String user, String password) {
+        this.database = database;
+        this.user = user;
+        this.password = password;
     }
 
     @Override

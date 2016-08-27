@@ -5,49 +5,17 @@ import java.sql.Date;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class Destination implements DestinationRepository {
+public class Destination {
 
-    private Long egn;
-    private Date arrival;
-    private Date departing;
-    private String cityName;
+    public final UID egn;
+    public final Date arrival;
+    public final Date departing;
+    public final String cityName;
 
-    public Destination(Long egn, Date arrival, Date departing, String cityName) {
+    public Destination(UID egn, Date arrival, Date departing, String cityName) {
         this.egn = egn;
         this.arrival = arrival;
         this.departing = departing;
-        this.cityName = cityName;
-    }
-
-    public Long getEgn() {
-        return egn;
-    }
-
-    public Date getArrival() {
-        return arrival;
-    }
-
-    public Date getDeparting() {
-        return departing;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setEgn(Long egn) {
-        this.egn = egn;
-    }
-
-    public void setArrival(Date arrival) {
-        this.arrival = arrival;
-    }
-
-    public void setDeparting(Date departing) {
-        this.departing = departing;
-    }
-
-    public void setCityName(String cityName) {
         this.cityName = cityName;
     }
 
@@ -59,5 +27,19 @@ public class Destination implements DestinationRepository {
                 ", departing=" + departing +
                 ", cityName='" + cityName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Destination)) return false;
+
+        Destination that = (Destination) o;
+
+        if (!egn.id.equals(that.egn.id)) return false;
+        if (!arrival.equals(that.arrival)) return false;
+        if (!departing.equals(that.departing)) return false;
+        return cityName.equals(that.cityName);
+
     }
 }

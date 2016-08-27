@@ -3,57 +3,41 @@ package com.clouway.tripagency.core;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class Person implements PersonRepository {
+public class Person {
 
-    private String name;//todo public final
-    private Long egn;// wrap in UID
-    private Integer age;
-    private String email;
+    public final String name;
+    public final UID egn;
+    public final Integer age;
+    public final String email;
 
-    public Person(String name, Long egn, Integer age, String email) {
+    public Person(String name, UID egn, Integer age, String email) {
         this.name = name;
         this.egn = egn;
         this.age = age;
         this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Long getEgn() {
-        return egn;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEgn(Long egn) {
-        this.egn = egn;
     }
 
     @Override
     public String toString() {
-        return name + " {" +
-                "age=" + age +
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", egn=" + egn +
+                ", age=" + age +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+
+        Person person = (Person) o;
+
+        if (!name.equals(person.name)) return false;
+        if (!egn.id.equals(person.egn.id)) return false;
+        if (!age.equals(person.age)) return false;
+        return email.equals(person.email);
+
     }
 }

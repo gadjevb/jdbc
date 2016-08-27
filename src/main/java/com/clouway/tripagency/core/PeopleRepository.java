@@ -1,30 +1,34 @@
 package com.clouway.tripagency.core;
 
 /**
- * basic CRUD ops
- * Created by borislav on 24.08.16.
+ * This {@code PeopleRepository} interface provides the methods
+ * to be implemented for work with the People table in the
+ * Trip_Agency database.
+ *
+ * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public interface PeopleRepository {
     /**
+     * Inserts a unit of data in the People table, uses an object of the {@code Person} Person class
+     * and returns value of the {@code Long} Long class
      *
-     * @param person
+     * @param person object contains the information needed for a unit of data in People table
+     * @return the EGN(Primary key) for the unit of data
      */
-    Integer register (Person person);
+    Long register(Person person);
 
+    /**
+     * Updates a single unit of data with the values contained in {@code Person} newPerson object
+     * whose primary key matches the {@code Long} value that is in the {@code UID} id object
+     *
+     * @param id contains the value used by the query for matching
+     * @param newPerson contains the values used for the update of the data unit
+     */
     void update(UID id, Person newPerson);
 
-
-
-
-
-
-    void insertPerson(String name, Long egn, Integer age, String email);
-    void updatePerson(String name, Long egn, Integer age, String email);
-    void getPeopleContent();
-    void getPeopleByFirstLetters(String letters);
-
-    void getPeopleInTheSameCity(String date, String city);
-
-//    void deleteTableContent();
+    /**
+     * Closes the connections used by the repository
+     */
+    void close();
 
 }
