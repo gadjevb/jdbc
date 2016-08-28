@@ -9,12 +9,21 @@ import java.sql.SQLException;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class ConnectionProvider implements Provider {
+public class ConnectionProvider implements Provider<Connection> {
 
     private Connection connection;
+    private String database;
+    private String user;
+    private String password;
+
+    public ConnectionProvider(String database, String user, String password) {
+        this.database = database;
+        this.user = user;
+        this.password = password;
+    }
 
     @Override
-    public Connection getConnection(String database, String user, String password) {
+    public Connection get() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/" + database, user, password);

@@ -21,8 +21,8 @@ public class PersistentUserRepository implements UserRepository {
     private Statement statement;
     private ResultSet resultSet;
 
-    public PersistentUserRepository(ConnectionProvider provider,String database, String username, String password)  {
-        connection = provider.getConnection(database,username,password);
+    public PersistentUserRepository(ConnectionProvider provider)  {
+        connection = provider.get();
         try {
             statement = connection.createStatement();
         } catch (SQLException e) {
@@ -30,7 +30,7 @@ public class PersistentUserRepository implements UserRepository {
         }
     }
 
-    public void getUsersContent() {
+    public List getUsersContent() {
         usersList = new ArrayList();
         try {
             resultSet = statement.executeQuery("SELECT * FROM USERS;");
@@ -40,9 +40,10 @@ public class PersistentUserRepository implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return usersList;
     }
 
-    public void getContactContent() {
+    public List getContactContent() {
         contactList = new ArrayList();
         try {
             resultSet = statement.executeQuery("SELECT * FROM Contact;");
@@ -52,9 +53,10 @@ public class PersistentUserRepository implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return contactList;
     }
 
-    public void getAddressContent() {
+    public List getAddressContent() {
         addressList = new ArrayList();
         try {
             resultSet = statement.executeQuery("SELECT * FROM ADDRESS;");
@@ -64,6 +66,7 @@ public class PersistentUserRepository implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return addressList;
     }
 
     public void close() {
@@ -80,17 +83,5 @@ public class PersistentUserRepository implements UserRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public List<Users> getUsersList() {
-        return usersList;
-    }
-
-    public List<Contact> getContactList() {
-        return contactList;
-    }
-
-    public List<Address> getAddressList() {
-        return addressList;
     }
 }

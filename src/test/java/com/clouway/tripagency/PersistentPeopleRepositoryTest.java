@@ -14,7 +14,7 @@ import java.sql.Statement;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by borislav on 27.08.16.
+ * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class PersistentPeopleRepositoryTest {
 
@@ -28,7 +28,7 @@ public class PersistentPeopleRepositoryTest {
         private Statement statement;
         private ResultSet set;
 
-        private FakeDatabaseOperator() {
+        public FakeDatabaseOperator() {
             connection = provider.get();
             try {
                 statement = connection.createStatement();
@@ -50,7 +50,7 @@ public class PersistentPeopleRepositoryTest {
             try {
                 set = statement.executeQuery("SELECT * FROM PEOPLE WHERE EGN = " + id + ";");
                 if(set.next()) {
-                    person = new Person(set.getString(1), new UID(set.getLong(2)), set.getInt(3), set.getString(4));
+                    person = new Person(set.getString(1), new UID(set.getLong(2)), set.getByte(3), set.getString(4));
                 }else{
                     return null;
                 }
@@ -64,12 +64,12 @@ public class PersistentPeopleRepositoryTest {
     @Test
     public void happyPath(){
         database.truncate();
-        peopleRepository.register(new Person("Jon", new UID(9203174579l), 24, "jon@gmail.com"));
+        peopleRepository.register(new Person("Jon", new UID(9203174579l), (byte)24, "jon@gmail.com"));
         Person person = database.get(new UID(9203174579l).id);
-        peopleRepository.update(new UID(9203174579l), new Person("Jon Doe", new UID(9203174579l), 24, "jon.doe@gmail.com"));
+        peopleRepository.update(new UID(9203174579l), new Person("Jon Doe", new UID(9203174579l), (byte)24, "jon.doe@gmail.com"));
         Person updatedPerson = database.get(new UID(9203174579l).id);
 
-        assertTrue(person.equals(new Person("Jon", new UID(9203174579l), 24, "jon@gmail.com")));
-        assertTrue(updatedPerson.equals(new Person("Jon Doe", new UID(9203174579l), 24, "jon.doe@gmail.com")));
+        assertTrue(person.equals(new Person("Jon", new UID(9203174579l), (byte)24, "jon@gmail.com")));
+        assertTrue(updatedPerson.equals(new Person("Jon Doe", new UID(9203174579l), (byte)24, "jon.doe@gmail.com")));
     }
 }

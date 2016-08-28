@@ -36,7 +36,7 @@ public class PersistentDataRetriever {
             resultSet = statement.executeQuery("SELECT * FROM PEOPLE;");
             while (resultSet.next()) {
                 uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getInt(3), resultSet.getString(4));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
                 personList.add(person);
             }
         } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class PersistentDataRetriever {
             resultSet = statement.executeQuery("SELECT * FROM PEOPLE WHERE Name::text LIKE '" + letters + "%';");
             while (resultSet.next()) {
                 uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getInt(3), resultSet.getString(4));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
                 personList.add(person);
             }
         } catch (SQLException e) {
@@ -67,7 +67,7 @@ public class PersistentDataRetriever {
                     "WHERE TRIP.Arrival <= '" + date + "' and TRIP.Department >= '" + date + "' and TRIP.City = '" + city + "';");
             while (resultSet.next()) {
                 uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getInt(3), resultSet.getString(4));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
                 personList.add(person);
             }
         } catch (SQLException e) {

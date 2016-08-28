@@ -10,8 +10,8 @@ public class Demo {
 
     public static void main(String[] args){
 
-        ConnectionProvider provider = new ConnectionProvider();
-        PersistentCustomerRepository customerRepository = new PersistentCustomerRepository(provider,"task4","postgres","123");
+        ConnectionProvider provider = new ConnectionProvider("task4","postgres","123");
+        PersistentCustomerRepository customerRepository = new PersistentCustomerRepository(provider);
 
         customerRepository.truncateAllRecords();
         customerRepository.insert("Jon",21);

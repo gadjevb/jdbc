@@ -1,10 +1,14 @@
 package com.clouway.userrepository.core;
 
-import java.sql.Connection;
-
 /**
+ * This {@code Provider} interface provides a method that returns a value
+ *
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public interface Provider {
-    Connection getConnection(String database, String user, String password);
+public interface Provider<T> {
+
+    /**
+     * @return value of specified type
+     */
+    T get();
 }

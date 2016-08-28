@@ -7,10 +7,10 @@ public class Person {
 
     public final String name;
     public final UID egn;
-    public final Integer age;
+    public final Byte age;
     public final String email;
 
-    public Person(String name, UID egn, Integer age, String email) {
+    public Person(String name, UID egn, Byte age, String email) {
         this.name = name;
         this.egn = egn;
         this.age = age;

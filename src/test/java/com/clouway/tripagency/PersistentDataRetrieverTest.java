@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
- * Created by borislav on 27.08.16.
+ * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class PersistentDataRetrieverTest {
 
@@ -44,7 +44,7 @@ public class PersistentDataRetrieverTest {
         private Connection connection;
         private Statement statement;
 
-        private FakePeopleRepository() {
+        public FakePeopleRepository() {
             connection = provider.get();
             try {
                 statement = connection.createStatement();
@@ -90,33 +90,33 @@ public class PersistentDataRetrieverTest {
     @Test
     public void peopleAndTripData(){
         truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),18,"bob@gmail.com"));
+        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
+        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
         tripRepository.register(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Ruse"));
         tripRepository.register(new Destination(new UID(9807236424l), new Date(2016,3,18), new Date(2016,5,22),"Vidin"));
         List<Person> people = retriever.getPeopleData();
         List<Destination> trips = retriever.getTripData();
 
-        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Jon",new UID(9712128833l),19,"jon@gmail.com"), new Person("Bob",new UID(9807236424l),18,"bob@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"), new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com")))));
         assertThat(trips, is(equalTo(Lists.newArrayList(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Ruse"), new Destination(new UID(9807236424l), new Date(2016,3,18), new Date(2016,5,22),"Vidin")))));
     }
 
     @Test
     public void byGivenLetters(){
         truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),18,"bob@gmail.com"));
-        peopleRepository.register(new Person("Sam",new UID(9612128833l),20,"sam@gmail.com"));
-        peopleRepository.register(new Person("Ben",new UID(9507236424l),21,"ben@gmail.com"));
+        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
+        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
+        peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));
+        peopleRepository.register(new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com"));
         List<Person> people = retriever.getPeopleByFirstLetters("B");
 
-        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Bob",new UID(9807236424l),18,"bob@gmail.com"), new Person("Ben",new UID(9507236424l),21,"ben@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"), new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com")))));
     }
 
     @Test
     public void mostVisitedCities(){
         truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),19,"jon@gmail.com"));
+        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
         tripRepository.register(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Vidin"));
         tripRepository.register(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
         tripRepository.register(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
@@ -131,14 +131,14 @@ public class PersistentDataRetrieverTest {
     @Test
     public void inSameCity(){
         truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),18,"bob@gmail.com"));
-        peopleRepository.register(new Person("Sam",new UID(9612128833l),20,"sam@gmail.com"));
+        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
+        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
+        peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));
         tripRepository.register(new Destination(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
         tripRepository.register(new Destination(new UID(9807236424l), new Date(2016,6,3), new Date(2016,6,10),"Turnovo"));
         tripRepository.register(new Destination(new UID(9612128833l), new Date(2016,6,28), new Date(2016,7,8),"Turnovo"));
         List<Person> people = retriever.getPeopleInTheSameCity(new Date(2016,6,9),"Turnovo");
 
-        assertThat(people, is(equalTo(Lists.newArrayList( new Person("Bob",new UID(9807236424l),18,"bob@gmail.com"), new Person("Jon",new UID(9712128833l),19,"jon@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList( new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"), new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com")))));
     }
 }

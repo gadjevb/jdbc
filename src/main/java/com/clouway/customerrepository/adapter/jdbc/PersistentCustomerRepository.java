@@ -16,8 +16,8 @@ public class PersistentCustomerRepository implements CustomerRepository {
     private Statement statement;
     private ResultSet resultSet;
 
-    public PersistentCustomerRepository(ConnectionProvider provider, String database, String username, String password) {
-        connection = provider.getConnection(database,username,password);
+    public PersistentCustomerRepository(ConnectionProvider provider) {
+        connection = provider.get();
         try {
             statement = connection.createStatement();
         } catch (SQLException e) {

@@ -28,7 +28,7 @@ public interface TripRepository {
     void update(UID id, Destination destination);
 
     /**
-     * Closes the connections used by the repository
+     * Closes the connections to the database
      */
     void close();
 

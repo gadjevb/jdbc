@@ -27,7 +27,7 @@ public interface PeopleRepository {
     void update(UID id, Person newPerson);
 
     /**
-     * Closes the connections used by the repository
+     * Closes the connections to the database
      */
     void close();
 

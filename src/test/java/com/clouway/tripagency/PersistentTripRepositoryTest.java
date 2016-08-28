@@ -12,7 +12,7 @@ import java.sql.*;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by borislav on 27.08.16.
+ * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class PersistentTripRepositoryTest {
 
@@ -26,7 +26,7 @@ public class PersistentTripRepositoryTest {
         private Statement statement;
         private ResultSet set;
 
-        private FakeDatabaseOperator() {
+        public FakeDatabaseOperator() {
             connection = provider.get();
             try {
                 statement = connection.createStatement();
@@ -71,7 +71,7 @@ public class PersistentTripRepositoryTest {
     @Test
     public void happyPath(){
         database.truncate();
-        database.register(new Person("Jon",new UID(9308128484l),23,"jon@gmail.com"));
+        database.register(new Person("Jon",new UID(9308128484l), (byte)23,"jon@gmail.com"));
         tripRepository.register(new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas"));
         Destination destination = database.get(new UID(9308128484l).id);
         tripRepository.update(new UID(9308128484l) ,new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo"));
