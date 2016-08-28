@@ -11,7 +11,7 @@ CREATE TABLE customer_history
 (
     ID INT NOT NULL,
     Name VARCHAR(50) NOT NULL,
-    Age SMALLINT NOT NULL,
+    Age SMALLINT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION logfunc() RETURNS TRIGGER AS $example_table$
