@@ -46,9 +46,4 @@ public interface CustomerRepository {
      */
     void truncate();
 
-    /**
-     * Closes the connections to the database
-     */
-    void close();
-
 }

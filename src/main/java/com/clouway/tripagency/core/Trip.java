@@ -5,14 +5,14 @@ import java.sql.Date;
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
-public class Destination {
+public class Trip {
 
     public final UID egn;
     public final Date arrival;
     public final Date departing;
     public final String cityName;
 
-    public Destination(UID egn, Date arrival, Date departing, String cityName) {
+    public Trip(UID egn, Date arrival, Date departing, String cityName) {
         this.egn = egn;
         this.arrival = arrival;
         this.departing = departing;
@@ -21,7 +21,7 @@ public class Destination {
 
     @Override
     public String toString() {
-        return "Destination{" +
+        return "Trip{" +
                 "egn=" + egn +
                 ", arrival=" + arrival +
                 ", departing=" + departing +
@@ -32,9 +32,9 @@ public class Destination {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Destination)) return false;
+        if (!(o instanceof Trip)) return false;
 
-        Destination that = (Destination) o;
+        Trip that = (Trip) o;
 
         if (!egn.id.equals(that.egn.id)) return false;
         if (!arrival.equals(that.arrival)) return false;

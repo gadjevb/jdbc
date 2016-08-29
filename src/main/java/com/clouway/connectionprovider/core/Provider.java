@@ -1,4 +1,4 @@
-package com.clouway.tripagency.core;
+package com.clouway.connectionprovider.core;
 
 /**
  * This {@code Provider} interface provides a method that returns a value

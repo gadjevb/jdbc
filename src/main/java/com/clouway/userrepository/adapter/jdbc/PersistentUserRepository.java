@@ -1,5 +1,7 @@
 package com.clouway.userrepository.adapter.jdbc;
 
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.core.Provider;
 import com.clouway.userrepository.core.Address;
 import com.clouway.userrepository.core.Contact;
 import com.clouway.userrepository.core.UserRepository;
@@ -14,29 +16,21 @@ import java.util.List;
  */
 public class PersistentUserRepository implements UserRepository {
 
-    private List<Users> usersList;
-    private List<Contact> contactList;
-    private List<Address> addressList;
-    private Connection connection;
-    private Statement statement;
-    private ResultSet resultSet;
+    private ConnectionProvider provider;
 
-    public PersistentUserRepository(ConnectionProvider provider)  {
-        connection = provider.get();
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public PersistentUserRepository(Provider provider)  {
+        this.provider = (ConnectionProvider) provider;
     }
 
     public List getUsersContent() {
-        usersList = new ArrayList();
-        try {
-            resultSet = statement.executeQuery("SELECT * FROM USERS;");
+        List<Users> usersList = new ArrayList();
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS;");
             while (resultSet.next()) {
                 usersList.add(new Users(resultSet.getInt(1), resultSet.getString(2)));
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,12 +38,14 @@ public class PersistentUserRepository implements UserRepository {
     }
 
     public List getContactContent() {
-        contactList = new ArrayList();
-        try {
-            resultSet = statement.executeQuery("SELECT * FROM Contact;");
+        List<Contact> contactList = new ArrayList();
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Contact;");
             while (resultSet.next()) {
                 contactList.add(new Contact(resultSet.getInt(1), resultSet.getLong(2)));
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,31 +53,17 @@ public class PersistentUserRepository implements UserRepository {
     }
 
     public List getAddressContent() {
-        addressList = new ArrayList();
-        try {
-            resultSet = statement.executeQuery("SELECT * FROM ADDRESS;");
+        List<Address> addressList = new ArrayList();
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM ADDRESS;");
             while (resultSet.next()) {
                 addressList.add(new Address(resultSet.getInt(1), resultSet.getString(2)));
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return addressList;
-    }
-
-    public void close() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (resultSet != null) {
-                resultSet.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

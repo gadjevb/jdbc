@@ -1,6 +1,6 @@
 package com.clouway.userrepository;
 
-import com.clouway.userrepository.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
 import com.clouway.userrepository.adapter.jdbc.PersistentUserRepository;
 import com.clouway.userrepository.core.Address;
 import com.clouway.userrepository.core.Contact;

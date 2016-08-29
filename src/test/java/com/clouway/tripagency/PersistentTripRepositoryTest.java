@@ -1,14 +1,21 @@
 package com.clouway.tripagency;
 
-import com.clouway.tripagency.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
+import com.clouway.tripagency.adapter.jdbc.PersistentPeopleRepository;
 import com.clouway.tripagency.adapter.jdbc.PersistentTripRepository;
-import com.clouway.tripagency.core.Destination;
+import com.clouway.tripagency.core.City;
+import com.clouway.tripagency.core.Trip;
 import com.clouway.tripagency.core.Person;
 import com.clouway.tripagency.core.UID;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.sql.*;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -17,67 +24,46 @@ import static org.junit.Assert.assertTrue;
 public class PersistentTripRepositoryTest {
 
     private ConnectionProvider provider = new ConnectionProvider("task2","postgres","123");
+    private PersistentPeopleRepository peopleRepository = new PersistentPeopleRepository(provider);
     private PersistentTripRepository tripRepository = new PersistentTripRepository(provider);
-    FakeDatabaseOperator database = new FakeDatabaseOperator();
 
-    private class FakeDatabaseOperator {
-
-        private Connection connection;
-        private Statement statement;
-        private ResultSet set;
-
-        public FakeDatabaseOperator() {
-            connection = provider.get();
-            try {
-                statement = connection.createStatement();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        void truncate(){
-            try {
-                statement.executeUpdate("TRUNCATE TABLE PEOPLE, TRIP;");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Destination get(Long id){
-            Destination destination = null;
-            try {
-                set = statement.executeQuery("SELECT * FROM TRIP WHERE EGN = " + id + ";");
-                if(set.next()) {
-                    destination = new Destination(new UID(set.getLong(1)), set.getDate(2), set.getDate(3), set.getString(4));
-                }else{
-                    return null;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return destination;
-        }
-
-        public Long register(Person person) {
-            try {
-                statement.executeUpdate("INSERT INTO PEOPLE VALUES('" + person.name + "'," + person.egn.id + "," + person.age + ",'" + person.email + "');");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return person.egn.id;
+    void truncate(){
+        try {
+            Connection connection = provider.get();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("TRUNCATE TABLE PEOPLE, TRIP;");
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Test
     public void happyPath(){
-        database.truncate();
-        database.register(new Person("Jon",new UID(9308128484l), (byte)23,"jon@gmail.com"));
-        tripRepository.register(new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas"));
-        Destination destination = database.get(new UID(9308128484l).id);
-        tripRepository.update(new UID(9308128484l) ,new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo"));
-        Destination updatedDestination = database.get(new UID(9308128484l).id);
+        truncate();
+        peopleRepository.register(new Person("Jon",new UID(9308128484l), (byte)23,"jon@gmail.com"));
+        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas"));
+        List<Trip> trip = tripRepository.getTripData();
+        tripRepository.update(new UID(9308128484l) ,new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo"));
+        List<Trip> updatedTrip = tripRepository.getTripData();
 
-        assertTrue(destination.equals(new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas")));
-        assertTrue(updatedDestination.equals(new Destination(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo")));
+        assertTrue(trip.get(0).equals(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas")));
+        assertTrue(updatedTrip.get(0).equals(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo")));
+    }
+
+    @Test
+    public void mostVisitedCities(){
+        truncate();
+        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Vidin"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
+        tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
+        List<City> cities = tripRepository.getMostVisitedCities();
+
+        assertThat(cities, is(equalTo(Lists.newArrayList(new City("Turnovo"), new City("Varna"), new City("Vidin")))));
     }
 }

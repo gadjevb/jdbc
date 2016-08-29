@@ -31,10 +31,4 @@ public interface UserRepository {
      * @return List of {@code Address} objects
      */
     List getAddressContent();
-
-    /**
-     * Closes all connections to the database
-     */
-    void close();
-
 }

@@ -1,58 +1,83 @@
 package com.clouway.tripagency.adapter.jdbc;
 
-import com.clouway.tripagency.core.Destination;
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.core.Provider;
+import com.clouway.tripagency.core.City;
+import com.clouway.tripagency.core.Trip;
 import com.clouway.tripagency.core.TripRepository;
 import com.clouway.tripagency.core.UID;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class PersistentTripRepository implements TripRepository {
 
+    private ConnectionProvider provider;
+    private String select = "SELECT * FROM TRIP;";
+    private String mostVisitedCities = "SELECT City FROM TRIP GROUP BY TRIP.City ORDER BY COUNT(City) DESC;";
 
-    private Connection connection;
-    private Statement statement;
+    public PersistentTripRepository(Provider provider) {
+        this.provider = (ConnectionProvider) provider;
+    }
 
-    public PersistentTripRepository(ConnectionProvider provider) {
-        connection = provider.get();
-        try {
-            statement = connection.createStatement();
+    public Long register(Trip trip) {
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate("INSERT INTO TRIP VALUES(" + trip.egn.id + ",'" + trip.arrival + "','" + trip.departing + "','" + trip.cityName + "');");
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return trip.egn.id;
+    }
+
+    public void update(UID egn, Trip trip) {
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate("UPDATE TRIP SET Arrival = '" + trip.arrival + "', Department = '" + trip.departing + "', City = '" + trip.cityName + "' WHERE EGN = " + egn.id + ";");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Long register(Destination destination) {
-        try {
-            statement.executeUpdate("INSERT INTO TRIP VALUES(" + destination.egn.id + ",'" + destination.arrival + "','" + destination.departing + "','" + destination.cityName + "');");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return destination.egn.id;
-    }
-
-    public void update(UID egn, Destination destination) {
-        try {
-            statement.executeUpdate("UPDATE TRIP SET Arrival = '" + destination.arrival + "', Department = '" + destination.departing + "', City = '" + destination.cityName + "' WHERE EGN = " + egn.id + ";");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void close() {
-        try {
-            if (connection != null) {
-                connection.close();
+    public List getTripData() {
+        List<Trip> tripList = new ArrayList();
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(select);
+            while (resultSet.next()) {
+                UID uid = new UID(resultSet.getLong(1));
+                Trip trip = new Trip(uid, resultSet.getDate(2), resultSet.getDate(3), resultSet.getString(4));
+                tripList.add(trip);
             }
-            if (statement != null) {
-                statement.close();
-            }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return tripList;
+    }
+
+    public List getMostVisitedCities() {
+        List<City> cityList = new ArrayList();
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(mostVisitedCities);
+            while (resultSet.next()) {
+                City city = new City(resultSet.getString(1));
+                cityList.add(city);
+            }
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cityList;
     }
 }

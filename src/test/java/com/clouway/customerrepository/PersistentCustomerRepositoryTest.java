@@ -1,6 +1,6 @@
 package com.clouway.customerrepository;
 
-import com.clouway.customerrepository.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
 import com.clouway.customerrepository.adapter.jdbc.PersistentCustomerRepository;
 import com.clouway.customerrepository.core.Customer;
 import com.google.common.collect.Lists;

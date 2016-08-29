@@ -1,5 +1,7 @@
 package com.clouway.tripagency.core;
 
+import java.util.List;
+
 /**
  * This {@code TripRepository} interface provides the methods
  * to be implemented for work with the Trip table in the
@@ -10,26 +12,35 @@ package com.clouway.tripagency.core;
 public interface TripRepository {
 
     /**
-     * Inserts a unit of data in the Trip table, uses an object of the {@code Destination} Destination class
+     * Inserts a unit of data in the Trip table, uses an object of the {@code Trip} Trip class
      * and returns value of the {@code Long} Long class
      *
-     * @param destination object contains the information needed for a unit of data in Trip table
+     * @param trip object contains the information needed for a unit of data in Trip table
      * @return the EGN(Foreign key) for the unit of data used to connect with People table
      */
-    Long register(Destination destination);
+    Long register(Trip trip);
 
     /**
-     * Updates a single unit of data with the values contained in {@code Destination} destination object
+     * Updates a single unit of data with the values contained in {@code Trip} trip object
      * whose primary key matches the {@code Long} value that is in the {@code UID} id object
      *
      * @param id contains the value used by the query for matching
-     * @param destination contains the values used for the update of the data unit
+     * @param trip contains the values used for the update of the data unit
      */
-    void update(UID id, Destination destination);
+    void update(UID id, Trip trip);
 
     /**
-     * Closes the connections to the database
+     * Returns all records in the Trip table in the form of list of trip objects
+     *
+     * @return List of {@code Trip} trip objects
      */
-    void close();
+    List getTripData();
+
+    /**
+     * Returns the most visited cities from the Trip table in descending order
+     *
+     * @return List of {@code City} city objects
+     */
+    List getMostVisitedCities();
 
 }

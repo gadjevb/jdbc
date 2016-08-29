@@ -1,5 +1,7 @@
 package com.clouway.customerrepository.adapter.jdbc;
 
+import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
+import com.clouway.connectionprovider.core.Provider;
 import com.clouway.customerrepository.core.Customer;
 import com.clouway.customerrepository.core.CustomerRepository;
 
@@ -15,22 +17,18 @@ import java.util.List;
  */
 public class PersistentCustomerRepository implements CustomerRepository {
 
-    private Connection connection;
-    private Statement statement;
-    private ResultSet resultSet;
-    private List<Customer> customerList;
+    private ConnectionProvider provider;
+    private String select = "SELECT COUNT(*) FROM CUSTOMER;";
+    private String sequence = "ALTER SEQUENCE customer_id RESTART WITH 1;";
+    private String truncate = "TRUNCATE TABLE CUSTOMER, CUSTOMER_HISTORY;";
 
-    public PersistentCustomerRepository(ConnectionProvider provider) {
-        connection = provider.get();
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public PersistentCustomerRepository(Provider provider) {
+        this.provider = (ConnectionProvider) provider;
     }
 
     public void register(Customer customer){
-        try {
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()){
             statement.executeUpdate("INSERT INTO CUSTOMER(Name, Age) VALUES('" + customer.name + "'," + customer.age + ");");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +36,8 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
     public void update(Integer id, Customer customer){
-        try {
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()){
             statement.executeUpdate("UPDATE CUSTOMER SET Name = '" + customer.name + "', Age = " + customer.age + " WHERE ID = " + id + ";");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -46,8 +45,9 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
     public Integer getNumberOfRecords(){
-        try {
-            resultSet = statement.executeQuery("SELECT COUNT(*) FROM CUSTOMER;");
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(select)) {
             resultSet.next();
             return resultSet.getInt(1);
         } catch (SQLException e) {
@@ -57,14 +57,16 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
     public List getHistoricalRecords(Integer page){
-        customerList = new ArrayList();
+        List<Customer> customerList = new ArrayList();
         int limit = getNumberOfRecords();
         int offset = (page - 1) * getNumberOfRecords();
-        try {
-            resultSet = statement.executeQuery("SELECT * FROM CUSTOMER_HISTORY LIMIT " + limit + " OFFSET " + offset + ";");
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM CUSTOMER_HISTORY LIMIT " + limit + " OFFSET " + offset + ";");
             while (resultSet.next()){
                 customerList.add(new Customer(resultSet.getInt(1),resultSet.getString(2),resultSet.getByte(3)));
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -72,25 +74,10 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
     public void truncate(){
-        try {
-            statement.executeUpdate("ALTER SEQUENCE customer_id RESTART WITH 1;");
-            statement.executeUpdate("TRUNCATE TABLE CUSTOMER, CUSTOMER_HISTORY;");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void close() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (resultSet != null) {
-                resultSet.close();
-            }
+        try (Connection connection = provider.get();
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(sequence);
+            statement.executeUpdate(truncate);
         } catch (SQLException e) {
             e.printStackTrace();
         }

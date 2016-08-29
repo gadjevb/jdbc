@@ -1,5 +1,7 @@
 package com.clouway.tripagency.core;
 
+import java.util.List;
+
 /**
  * This {@code PeopleRepository} interface provides the methods
  * to be implemented for work with the People table in the
@@ -27,8 +29,18 @@ public interface PeopleRepository {
     void update(UID id, Person newPerson);
 
     /**
-     * Closes the connections to the database
+     * Returns all records in the People table in the form of list of person objects
+     *
+     * @return List of {@code Person} person objects
      */
-    void close();
+    List getPeopleData();
+
+    /**
+     * Returns all person records from the People table whose names start with the given letters
+     *
+     * @param letters used by the query to match the records
+     * @return List of {@code Person} person objects
+     */
+    List getPeopleByFirstLetters(String letters);
 
 }

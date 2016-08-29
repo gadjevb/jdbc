@@ -1,6 +1,6 @@
-package com.clouway.userrepository.adapter.jdbc;
+package com.clouway.connectionprovider.adapter.jdbc;
 
-import com.clouway.userrepository.core.Provider;
+import com.clouway.connectionprovider.core.Provider;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
  */
 public class ConnectionProvider implements Provider<Connection> {
 
-    private Connection connection;
     private String database;
     private String user;
     private String password;
@@ -24,6 +23,7 @@ public class ConnectionProvider implements Provider<Connection> {
 
     @Override
     public Connection get() {
+        Connection connection;
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/" + database, user, password);
