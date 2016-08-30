@@ -11,7 +11,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
@@ -25,12 +24,12 @@ public class PersistentCustomerRepositoryTest {
     @Test
     public void happyPath(){
         customerRepository.truncate();
-        customerRepository.register(new Customer(null,"Jon",(byte)18));
-        customerRepository.register(new Customer(null,"Bob",(byte)19));
-        customerRepository.update(1,new Customer(null,"Jon Doe",(byte)20));
-        customerRepository.update(2,new Customer(null,"Bob Doe",(byte)20));
-        history = customerRepository.getHistoricalRecords(2);
+        customerRepository.register(new Customer(null,"Jon",18));
+        customerRepository.register(new Customer(null,"Bob",19));
+        customerRepository.update(1,new Customer(null,"Jon Doe",20));
+        customerRepository.update(2,new Customer(null,"Bob Doe",20));
+        history = customerRepository.getHistoricalRecords(1);
 
-        assertThat(history, is(equalTo(Lists.newArrayList(new Customer(2,"Bob",(byte)19), new Customer(1,"Jon Doe",(byte)20)))));
+        assertThat(history, is(equalTo(Lists.newArrayList(new Customer(1,"Jon",18), new Customer(2,"Bob",19)))));
     }
 }

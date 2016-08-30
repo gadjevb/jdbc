@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class PersistentTripManagerRepository implements TripManagerRepository {
 
-    private ConnectionProvider provider;
+    private Provider<Connection> provider;
 
-    public PersistentTripManagerRepository(Provider provider) {
-        this.provider = (ConnectionProvider) provider;
+    public PersistentTripManagerRepository(Provider<Connection> provider) {
+        this.provider = provider;
     }
 
     public List<Person> getPeopleInTheSameCity(Date date, String city) {
@@ -30,7 +30,7 @@ public class PersistentTripManagerRepository implements TripManagerRepository {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 UID uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getInt(3), resultSet.getString(4));
                 personList.add(person);
             }
             resultSet.close();

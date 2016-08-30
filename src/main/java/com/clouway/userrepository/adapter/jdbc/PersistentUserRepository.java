@@ -16,10 +16,10 @@ import java.util.List;
  */
 public class PersistentUserRepository implements UserRepository {
 
-    private ConnectionProvider provider;
+    private Provider<Connection> provider;
 
-    public PersistentUserRepository(Provider provider)  {
-        this.provider = (ConnectionProvider) provider;
+    public PersistentUserRepository(Provider<Connection> provider)  {
+        this.provider = provider;
     }
 
     public List getUsersContent() {

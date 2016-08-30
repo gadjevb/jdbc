@@ -2,10 +2,8 @@ package com.clouway.tripagency.adapter.jdbc;
 
 import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
 import com.clouway.connectionprovider.core.Provider;
-import com.clouway.tripagency.core.City;
-import com.clouway.tripagency.core.Trip;
-import com.clouway.tripagency.core.TripRepository;
-import com.clouway.tripagency.core.UID;
+import com.clouway.tripagency.core.*;
+import com.google.common.collect.Lists;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,10 +14,10 @@ import java.util.List;
  */
 public class PersistentTripRepository implements TripRepository {
 
-    private ConnectionProvider provider;
+    private Provider<Connection> provider;
 
-    public PersistentTripRepository(Provider provider) {
-        this.provider = (ConnectionProvider) provider;
+    public PersistentTripRepository(Provider<Connection> provider) {
+        this.provider = provider;
     }
 
     public Long register(Trip trip) {
@@ -44,17 +42,12 @@ public class PersistentTripRepository implements TripRepository {
     }
 
     public List getAll() {
-        List<Trip> tripList = new ArrayList();
+        List<Trip> tripList = Lists.newArrayList();
         String select = "SELECT * FROM TRIP;";
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(select)) {
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                UID uid = new UID(resultSet.getLong(1));
-                Trip trip = new Trip(uid, resultSet.getDate(2), resultSet.getDate(3), resultSet.getString(4));
-                tripList.add(trip);
-            }
-            resultSet.close();
+            return adaptTrip(resultSet, tripList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,13 +60,46 @@ public class PersistentTripRepository implements TripRepository {
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(mostVisitedCities)) {
             ResultSet resultSet = statement.executeQuery();
+            adaptCity(resultSet, cityList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cityList;
+    }
+
+    private List<Trip> adaptTrip(ResultSet resultSet, List<Trip> tripList) {
+        try {
+            while (resultSet.next()) {
+                UID uid = new UID(resultSet.getLong(1));
+                Trip trip = new Trip(uid, resultSet.getDate(2), resultSet.getDate(3), resultSet.getString(4));
+                tripList.add(trip);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return tripList;
+    }
+
+    private List<City> adaptCity(ResultSet resultSet, List<City> cityList) {
+        try {
             while (resultSet.next()) {
                 City city = new City(resultSet.getString(1));
                 cityList.add(city);
             }
-            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return cityList;
     }

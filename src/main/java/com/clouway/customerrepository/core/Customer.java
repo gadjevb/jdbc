@@ -7,9 +7,9 @@ public class Customer {
 
     public final Integer id;
     public final String name;
-    public final Byte age;
+    public final Integer age;
 
-    public Customer(Integer id, String name, Byte age) {
+    public Customer(Integer id, String name, Integer age) {
         this.id = id;
         this.name = name;
         this.age = age;

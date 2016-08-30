@@ -1,6 +1,5 @@
 package com.clouway.customerrepository.adapter.jdbc;
 
-import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
 import com.clouway.connectionprovider.core.Provider;
 import com.clouway.customerrepository.core.Customer;
 import com.clouway.customerrepository.core.CustomerRepository;
@@ -14,10 +13,10 @@ import java.util.List;
  */
 public class PersistentCustomerRepository implements CustomerRepository {
 
-    private ConnectionProvider provider;
+    private Provider<Connection> provider;
 
-    public PersistentCustomerRepository(Provider provider) {
-        this.provider = (ConnectionProvider) provider;
+    public PersistentCustomerRepository(Provider<Connection> provider) {
+        this.provider = provider;
     }
 
     public void register(Customer customer){
@@ -62,7 +61,7 @@ public class PersistentCustomerRepository implements CustomerRepository {
              PreparedStatement statement = connection.prepareStatement(select)) {
              ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
-                customerList.add(new Customer(resultSet.getInt(1),resultSet.getString(2),resultSet.getByte(3)));
+                customerList.add(new Customer(resultSet.getInt(1),resultSet.getString(2),resultSet.getInt(3)));
             }
             resultSet.close();
         } catch (SQLException e) {
@@ -84,10 +83,10 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
 
-    //todo this is just fot the 4-th task to show how to inser large amount of records
+    //todo this is just fot the 4-th task to show how to insert large amount of records
     private void registerLargeNumberOfRecords(Customer customer, Integer numberOfRecords){
         String name = customer.name;
-        Byte age = customer.age;
+        Integer age = customer.age;
         String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + ");";
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(register)){

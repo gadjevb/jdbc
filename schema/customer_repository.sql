@@ -15,10 +15,17 @@ CREATE TABLE customer_history
 );
 
 CREATE OR REPLACE FUNCTION logfunc() RETURNS TRIGGER AS $example_table$
+    DECLARE
+            old_ID INT;
+            old_Name VARCHAR(50);
+            old_Age SMALLINT;
     BEGIN
-            INSERT INTO customer_history SELECT * FROM customer;
+            old_ID = OLD.ID;
+            old_Name = OLD.Name;
+            old_Age = OLD.Age;
+            INSERT INTO customer_history(ID, Name, Age) VALUES(old_ID, old_Name, old_Age);
             RETURN NEW;
     END;
 $example_table$ LANGUAGE plpgsql;
 
-CREATE TRIGGER tr_tblCustomer_ForUpdate BEFORE UPDATE ON customer FOR EACH ROW EXECUTE PROCEDURE logfunc();
+CREATE TRIGGER tr_tblCustomer_ForUpdate AFTER UPDATE ON customer FOR EACH ROW EXECUTE PROCEDURE logfunc();

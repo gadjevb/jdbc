@@ -27,7 +27,7 @@ public class PersistentTripRepositoryTest {
     private ConnectionProvider provider = new ConnectionProvider("task2","postgres","123");
     private PersistentPeopleRepository peopleRepository = new PersistentPeopleRepository(provider);
     private PersistentTripRepository tripRepository = new PersistentTripRepository(provider);
-    private Person person = new Person("Jon",new UID(9308128484l), (byte)23,"person@gmail.com");
+    private Person person = new Person("Jon",new UID(9308128484l), 23,"person@gmail.com");
 
     @Before
     public void setUp() throws Exception {
@@ -45,26 +45,40 @@ public class PersistentTripRepositoryTest {
     @Test
     public void happyPath(){
         peopleRepository.register(person);
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas"));
         List<Trip> trip = tripRepository.getAll();
-        tripRepository.update(new UID(9308128484l) ,new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo"));
+
+
+        assertTrue(trip.get(0).equals(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas")));
+    }
+
+    @Test
+    public void update(){
+        peopleRepository.register(person);
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas"));
+        List<Trip> trip = tripRepository.getAll();
+        tripRepository.update(new UID(9308128484l) ,new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Turnovo"));
         List<Trip> updatedTrip = tripRepository.getAll();
 
-        assertTrue(trip.get(0).equals(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Burgas")));
-        assertTrue(updatedTrip.get(0).equals(new Trip(new UID(9308128484l), new Date(2016,8,15), new Date(2016,8,20), "Turnovo")));
+        assertTrue(trip.get(0).equals(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas")));
+        assertTrue(updatedTrip.get(0).equals(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Turnovo")));
     }
 
     @Test
     public void mostVisitedCities(){
         peopleRepository.register(person);
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Varna"));
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
-        tripRepository.register(new Trip(new UID(9308128484l), new Date(2016,6,6), new Date(2016,6,16),"Vidin"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Varna"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Varna"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
+        tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Vidin"));
         List<City> cities = tripRepository.getMostVisited();
 
         assertThat(cities, is(equalTo(Lists.newArrayList(new City("Turnovo"), new City("Varna"), new City("Vidin")))));
+    }
+
+    private Date getDate(Integer year, Integer month, Integer day){
+        return new Date(year,month,day);
     }
 }

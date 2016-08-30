@@ -49,7 +49,6 @@ public class PersistentPeopleRepository implements PeopleRepository {
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
-
             return adapt(resultSet, personList);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,12 +58,10 @@ public class PersistentPeopleRepository implements PeopleRepository {
 
     public List getPeopleByFirstLetters(String letters) {
         List<Person> personList = Lists.newArrayList();
-
         String selectByLetter = "SELECT * FROM PEOPLE WHERE Name::text LIKE '" + letters + "%';";
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(selectByLetter)) {
             ResultSet resultSet = statement.executeQuery();
-
             return adapt(resultSet, personList);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,7 +73,7 @@ public class PersistentPeopleRepository implements PeopleRepository {
         try {
             while (resultSet.next()) {
                 UID uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getInt(3), resultSet.getString(4));
                 personList.add(person);
             }
         } catch (SQLException e) {
@@ -88,7 +85,6 @@ public class PersistentPeopleRepository implements PeopleRepository {
                 e.printStackTrace();
             }
         }
-
         return personList;
     }
 }
