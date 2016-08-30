@@ -6,10 +6,7 @@ import com.clouway.tripagency.core.PeopleRepository;
 import com.clouway.tripagency.core.Person;
 import com.clouway.tripagency.core.UID;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,19 +16,16 @@ import java.util.List;
 public class PersistentPeopleRepository implements PeopleRepository {
 
     private ConnectionProvider provider;
-    private Person person;
-    private UID egn;
-    String select = "SELECT * FROM PEOPLE;";
 
     public PersistentPeopleRepository(Provider provider) {
         this.provider = (ConnectionProvider) provider;
     }
 
     public Long register(Person person) {
-        this.person = person;
+        String register = "INSERT INTO PEOPLE VALUES('" + person.name + "'," + person.egn.id + "," + person.age + ",'" + person.email + "');";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate("INSERT INTO PEOPLE VALUES('" + person.name + "'," + person.egn.id + "," + person.age + ",'" + person.email + "');");
+             PreparedStatement statement = connection.prepareStatement(register)) {
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,23 +33,23 @@ public class PersistentPeopleRepository implements PeopleRepository {
     }
 
     public void update(UID egn, Person person) {
-        this.person = person;
-        this.egn = egn;
+        String update = "UPDATE PEOPLE SET Name = '" + person.name + "', Age = " + person.age + ", Email = '" + person.email + "' WHERE EGN = " + egn.id + ";";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate("UPDATE PEOPLE SET Name = '" + person.name + "', Age = " + person.age + ", Email = '" + person.email + "' WHERE EGN = " + egn.id + ";");
+             PreparedStatement statement = connection.prepareStatement(update)) {
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public List getPeopleData() {
+    public List getAll() {
         List<Person> personList = new ArrayList();
         ResultSet resultSet;
         UID uid;
+        String selectAll = "SELECT * FROM PEOPLE;";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            resultSet = statement.executeQuery(select);
+             PreparedStatement statement = connection.prepareStatement(selectAll)) {
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 uid = new UID(resultSet.getLong(2));
                 Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
@@ -72,9 +66,10 @@ public class PersistentPeopleRepository implements PeopleRepository {
         List<Person> personList = new ArrayList();
         ResultSet resultSet;
         UID uid;
+        String selectByLetter = "SELECT * FROM PEOPLE WHERE Name::text LIKE '" + letters + "%';";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            resultSet = statement.executeQuery("SELECT * FROM PEOPLE WHERE Name::text LIKE '" + letters + "%';");
+             PreparedStatement statement = connection.prepareStatement(selectByLetter)) {
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 uid = new UID(resultSet.getLong(2));
                 Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));

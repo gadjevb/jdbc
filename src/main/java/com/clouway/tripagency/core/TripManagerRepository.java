@@ -20,5 +20,5 @@ public interface TripManagerRepository {
      * @param city used by the query to match the records
      * @return List of {@code Person} person objects
      */
-    List getPeopleInTheSameCity(Date date, String city);
+    List<Person> getPeopleInTheSameCity(Date date, String city);
 }

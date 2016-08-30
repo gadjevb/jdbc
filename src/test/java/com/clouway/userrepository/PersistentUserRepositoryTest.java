@@ -6,6 +6,7 @@ import com.clouway.userrepository.core.Address;
 import com.clouway.userrepository.core.Contact;
 import com.clouway.userrepository.core.Users;
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -29,7 +30,8 @@ public class PersistentUserRepositoryTest {
     private PersistentUserRepository userRepository = new PersistentUserRepository(provider);
     FakeDatabaseOperator operator = new FakeDatabaseOperator();
 
-    private void truncate(){
+    @Before
+    public void setUp() throws Exception {
         try {
             Connection connection = provider.get();
             Statement statement = connection.createStatement();
@@ -84,7 +86,6 @@ public class PersistentUserRepositoryTest {
 
     @Test
     public void happyPath() {
-        truncate();
         operator.registerUser(new Users(105,"Jon"));
         operator.registerUser(new Users(106,"Bob"));
         operator.registerContact(new Contact(105,8878881213l));

@@ -8,6 +8,7 @@ import com.clouway.tripagency.core.Trip;
 import com.clouway.tripagency.core.Person;
 import com.clouway.tripagency.core.UID;
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -30,8 +31,8 @@ public class PersistentTripManagerRepositoryTest {
     private PersistentPeopleRepository peopleRepository = new PersistentPeopleRepository(provider);
     private PersistentTripRepository tripRepository = new PersistentTripRepository(provider);
 
-
-    private void truncate(){
+    @Before
+    public void setUp() throws Exception {
         try {
             Connection connection = provider.get();
             Statement statement = connection.createStatement();
@@ -42,8 +43,7 @@ public class PersistentTripManagerRepositoryTest {
     }
 
     @Test
-    public void inSameCity(){
-        truncate();
+    public void peopleInSameCityAtTheSameTime(){
         peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
         peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
         peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));

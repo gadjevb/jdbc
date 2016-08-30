@@ -5,10 +5,7 @@ import com.clouway.connectionprovider.core.Provider;
 import com.clouway.customerrepository.core.Customer;
 import com.clouway.customerrepository.core.CustomerRepository;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,36 +15,51 @@ import java.util.List;
 public class PersistentCustomerRepository implements CustomerRepository {
 
     private ConnectionProvider provider;
-    private String select = "SELECT COUNT(*) FROM CUSTOMER;";
-    private String sequence = "ALTER SEQUENCE customer_id RESTART WITH 1;";
-    private String truncate = "TRUNCATE TABLE CUSTOMER, CUSTOMER_HISTORY;";
 
     public PersistentCustomerRepository(Provider provider) {
         this.provider = (ConnectionProvider) provider;
     }
 
     public void register(Customer customer){
+        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + customer.name + "'," + customer.age + ");";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()){
-            statement.executeUpdate("INSERT INTO CUSTOMER(Name, Age) VALUES('" + customer.name + "'," + customer.age + ");");
+             PreparedStatement statement = connection.prepareStatement(register)){
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerLargeNumberOfRecords(Customer customer, Integer numberOfRecords){
+        String name = customer.name;
+        Byte age = customer.age;
+        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + ");";
+        try (Connection connection = provider.get();
+             PreparedStatement statement = connection.prepareStatement(register)){
+            while (numberOfRecords > 0){
+                statement.executeUpdate();
+                numberOfRecords--;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void update(Integer id, Customer customer){
+        String update = "UPDATE CUSTOMER SET Name = '" + customer.name + "', Age = " + customer.age + " WHERE ID = " + id + ";";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()){
-            statement.executeUpdate("UPDATE CUSTOMER SET Name = '" + customer.name + "', Age = " + customer.age + " WHERE ID = " + id + ";");
+             PreparedStatement statement = connection.prepareStatement(update)){
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public Integer getNumberOfRecords(){
+        String numberOfRecords = "SELECT COUNT(*) FROM CUSTOMER;";;
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(select)) {
+             PreparedStatement statement = connection.prepareStatement(numberOfRecords);
+             ResultSet resultSet = statement.executeQuery()) {
             resultSet.next();
             return resultSet.getInt(1);
         } catch (SQLException e) {
@@ -60,9 +72,10 @@ public class PersistentCustomerRepository implements CustomerRepository {
         List<Customer> customerList = new ArrayList();
         int limit = getNumberOfRecords();
         int offset = (page - 1) * getNumberOfRecords();
+        String select = "SELECT * FROM CUSTOMER_HISTORY LIMIT " + limit + " OFFSET " + offset + ";";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM CUSTOMER_HISTORY LIMIT " + limit + " OFFSET " + offset + ";");
+             PreparedStatement statement = connection.prepareStatement(select)) {
+             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 customerList.add(new Customer(resultSet.getInt(1),resultSet.getString(2),resultSet.getByte(3)));
             }
@@ -74,6 +87,8 @@ public class PersistentCustomerRepository implements CustomerRepository {
     }
 
     public void truncate(){
+        String sequence = "ALTER SEQUENCE customer_id RESTART WITH 1;";
+        String truncate = "TRUNCATE TABLE CUSTOMER, CUSTOMER_HISTORY;";
         try (Connection connection = provider.get();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(sequence);

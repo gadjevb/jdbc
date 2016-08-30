@@ -5,6 +5,7 @@ import com.clouway.tripagency.adapter.jdbc.PersistentPeopleRepository;
 import com.clouway.tripagency.core.Person;
 import com.clouway.tripagency.core.UID;
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.*;
@@ -22,8 +23,11 @@ public class PersistentPeopleRepositoryTest {
 
     private ConnectionProvider provider = new ConnectionProvider("task2","postgres","123");
     private PersistentPeopleRepository peopleRepository = new PersistentPeopleRepository(provider);
+    private Person jon = new Person("Jon", new UID(9203174579l), (byte)24, "jon@gmail.com");
+    private Person bob = new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com");
 
-    void truncate(){
+    @Before
+    public void setUp() throws Exception {
         try {
             Connection connection = provider.get();
             Statement statement = connection.createStatement();
@@ -37,35 +41,32 @@ public class PersistentPeopleRepositoryTest {
 
     @Test
     public void happyPath(){
-        truncate();
-        peopleRepository.register(new Person("Jon", new UID(9203174579l), (byte)24, "jon@gmail.com"));
-        List<Person> person = peopleRepository.getPeopleData();
+        peopleRepository.register(jon);
+        List<Person> person = peopleRepository.getAll();
         peopleRepository.update(new UID(9203174579l), new Person("Jon Doe", new UID(9203174579l), (byte)24, "jon.doe@gmail.com"));
-        List<Person> updatedPerson = peopleRepository.getPeopleData();
+        List<Person> updatedPerson = peopleRepository.getAll();
 
-        assertTrue(person.get(0).equals(new Person("Jon", new UID(9203174579l), (byte)24, "jon@gmail.com")));
+        assertTrue(person.get(0).equals(jon));
         assertTrue(updatedPerson.get(0).equals(new Person("Jon Doe", new UID(9203174579l), (byte)24, "jon.doe@gmail.com")));
     }
 
     @Test
-    public void peopleAndTripData(){
-        truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
-        List<Person> people = peopleRepository.getPeopleData();
+    public void getPeopleData(){
+        peopleRepository.register(jon);
+        peopleRepository.register(bob);
+        List<Person> people = peopleRepository.getAll();
 
-        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"), new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList(jon, bob))));
     }
 
     @Test
-    public void byGivenLetters(){
-        truncate();
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
+    public void getPeopleByGivenLetters(){
+        peopleRepository.register(jon);
+        peopleRepository.register(bob);
         peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));
         peopleRepository.register(new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com"));
         List<Person> people = peopleRepository.getPeopleByFirstLetters("B");
 
-        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"), new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList(bob, new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com")))));
     }
 }

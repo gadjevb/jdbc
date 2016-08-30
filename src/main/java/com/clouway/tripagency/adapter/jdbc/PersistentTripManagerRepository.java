@@ -23,10 +23,11 @@ public class PersistentTripManagerRepository implements TripManagerRepository {
 
     public List getPeopleInTheSameCity(Date date, String city) {
         List<Person> personList = new ArrayList();
+        String peopleInTheSameCity = "SELECT DISTINCT * FROM PEOPLE INNER JOIN TRIP ON PEOPLE.EGN = TRIP.EGN " +
+                "WHERE TRIP.Arrival <= '" + date + "' and TRIP.Department >= '" + date + "' and TRIP.City = '" + city + "';";
         try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT DISTINCT * FROM PEOPLE INNER JOIN TRIP ON PEOPLE.EGN = TRIP.EGN " +
-                    "WHERE TRIP.Arrival <= '" + date + "' and TRIP.Department >= '" + date + "' and TRIP.City = '" + city + "';");
+             PreparedStatement statement = connection.prepareStatement(peopleInTheSameCity)) {
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 UID uid = new UID(resultSet.getLong(2));
                 Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));

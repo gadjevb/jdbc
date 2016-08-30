@@ -34,13 +34,13 @@ public interface TripRepository {
      *
      * @return List of {@code Trip} trip objects
      */
-    List getTripData();
+    List<Trip> getTripData();
 
     /**
      * Returns the most visited cities from the Trip table in descending order
      *
      * @return List of {@code City} city objects
      */
-    List getMostVisitedCities();
+    List<Trip> getMostVisited();
 
 }

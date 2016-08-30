@@ -33,7 +33,7 @@ public interface PeopleRepository {
      *
      * @return List of {@code Person} person objects
      */
-    List getPeopleData();
+    List<Person> getAll();
 
     /**
      * Returns all person records from the People table whose names start with the given letters
@@ -41,6 +41,6 @@ public interface PeopleRepository {
      * @param letters used by the query to match the records
      * @return List of {@code Person} person objects
      */
-    List getPeopleByFirstLetters(String letters);
+    List<Person> getPeopleByFirstLetters(String letters);
 
 }
