@@ -33,11 +33,4 @@ public class PersistentCustomerRepositoryTest {
 
         assertThat(history, is(equalTo(Lists.newArrayList(new Customer(2,"Bob",(byte)19), new Customer(1,"Jon Doe",(byte)20)))));
     }
-
-    @Test
-    public void largeAmountOfData(){
-        customerRepository.truncate();
-        customerRepository.registerLargeNumberOfRecords(new Customer(null , "Dave", (byte)25), 20);
-        assertTrue(customerRepository.getNumberOfRecords() == 20);
-    }
 }

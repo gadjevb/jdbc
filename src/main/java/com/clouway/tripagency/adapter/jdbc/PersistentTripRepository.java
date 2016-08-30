@@ -43,7 +43,7 @@ public class PersistentTripRepository implements TripRepository {
         }
     }
 
-    public List getTripData() {
+    public List getAll() {
         List<Trip> tripList = new ArrayList();
         String select = "SELECT * FROM TRIP;";
         try (Connection connection = provider.get();

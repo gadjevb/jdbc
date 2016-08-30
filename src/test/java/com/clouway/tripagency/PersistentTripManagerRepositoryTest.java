@@ -44,14 +44,22 @@ public class PersistentTripManagerRepositoryTest {
 
     @Test
     public void peopleInSameCityAtTheSameTime(){
-        peopleRepository.register(new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com"));
-        peopleRepository.register(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"));
-        peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));
+        Person person1 = new Person("Jon", new UID(9712128833l), (byte) 19, "jon@gmail.com");
+        Person person2 = new Person("Bob", new UID(9807236424l), (byte) 18, "bob@gmail.com");
+        Person person3 = new Person("Sam", new UID(9612128833l), (byte) 20, "sam@gmail.com");
+
+        peopleRepository.register(person1);
+        peopleRepository.register(person2);
+        peopleRepository.register(person3);
         tripRepository.register(new Trip(new UID(9712128833l), new Date(2016,6,6), new Date(2016,6,16),"Turnovo"));
         tripRepository.register(new Trip(new UID(9807236424l), new Date(2016,6,3), new Date(2016,6,10),"Turnovo"));
         tripRepository.register(new Trip(new UID(9612128833l), new Date(2016,6,28), new Date(2016,7,8),"Turnovo"));
         List<Person> people = tripManager.getPeopleInTheSameCity(new Date(2016,6,9),"Turnovo");
 
-        assertThat(people, is(equalTo(Lists.newArrayList(new Person("Bob",new UID(9807236424l),(byte)18,"bob@gmail.com"), new Person("Jon",new UID(9712128833l),(byte)19,"jon@gmail.com")))));
+        assertThat(people, is(equalTo(Lists.newArrayList(person2, person1))));
+    }
+
+    private Date getDate(){
+
     }
 }

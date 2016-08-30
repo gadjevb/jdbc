@@ -1,24 +1,25 @@
 package com.clouway.tripagency.adapter.jdbc;
 
-import com.clouway.connectionprovider.adapter.jdbc.ConnectionProvider;
 import com.clouway.connectionprovider.core.Provider;
 import com.clouway.tripagency.core.PeopleRepository;
 import com.clouway.tripagency.core.Person;
 import com.clouway.tripagency.core.UID;
+import com.google.common.collect.Lists;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * @author Borislav Gadjev <gadjevb@gmail.com>
  */
 public class PersistentPeopleRepository implements PeopleRepository {
+    private Provider<Connection> provider;
 
-    private ConnectionProvider provider;
-
-    public PersistentPeopleRepository(Provider provider) {
-        this.provider = (ConnectionProvider) provider;
+    public PersistentPeopleRepository(Provider<Connection> provider) {
+        this.provider = provider;
     }
 
     public Long register(Person person) {
@@ -42,20 +43,14 @@ public class PersistentPeopleRepository implements PeopleRepository {
         }
     }
 
-    public List getAll() {
-        List<Person> personList = new ArrayList();
-        ResultSet resultSet;
-        UID uid;
-        String selectAll = "SELECT * FROM PEOPLE;";
+    public List<Person> getAll() {
+        String query = "SELECT * FROM PEOPLE;";
+        List<Person> personList = Lists.newArrayList();
         try (Connection connection = provider.get();
-             PreparedStatement statement = connection.prepareStatement(selectAll)) {
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
-                personList.add(person);
-            }
-            resultSet.close();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+
+            return adapt(resultSet, personList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -63,22 +58,37 @@ public class PersistentPeopleRepository implements PeopleRepository {
     }
 
     public List getPeopleByFirstLetters(String letters) {
-        List<Person> personList = new ArrayList();
-        ResultSet resultSet;
-        UID uid;
+        List<Person> personList = Lists.newArrayList();
+
         String selectByLetter = "SELECT * FROM PEOPLE WHERE Name::text LIKE '" + letters + "%';";
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(selectByLetter)) {
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                uid = new UID(resultSet.getLong(2));
-                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
-                personList.add(person);
-            }
-            resultSet.close();
+            ResultSet resultSet = statement.executeQuery();
+
+            return adapt(resultSet, personList);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return personList;
+    }
+
+    private List<Person> adapt(ResultSet resultSet, List<Person> personList) {
+        try {
+            while (resultSet.next()) {
+                UID uid = new UID(resultSet.getLong(2));
+                Person person = new Person(resultSet.getString(1), uid, resultSet.getByte(3), resultSet.getString(4));
+                personList.add(person);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         return personList;
     }
 }

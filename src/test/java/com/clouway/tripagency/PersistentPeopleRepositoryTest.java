@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -54,15 +55,17 @@ public class PersistentPeopleRepositoryTest {
     public void getPeopleData(){
         peopleRepository.register(jon);
         peopleRepository.register(bob);
-        List<Person> people = peopleRepository.getAll();
+        List<Person> actual = peopleRepository.getAll();
 
-        assertThat(people, is(equalTo(Lists.newArrayList(jon, bob))));
+        ArrayList<Person> expected = Lists.newArrayList(jon, bob);
+        assertThat(actual, is(equalTo(expected)));
     }
 
     @Test
     public void getPeopleByGivenLetters(){
         peopleRepository.register(jon);
         peopleRepository.register(bob);
+
         peopleRepository.register(new Person("Sam",new UID(9612128833l),(byte)20,"sam@gmail.com"));
         peopleRepository.register(new Person("Ben",new UID(9507236424l),(byte)21,"ben@gmail.com"));
         List<Person> people = peopleRepository.getPeopleByFirstLetters("B");

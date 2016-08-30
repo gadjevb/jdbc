@@ -30,21 +30,6 @@ public class PersistentCustomerRepository implements CustomerRepository {
         }
     }
 
-    public void registerLargeNumberOfRecords(Customer customer, Integer numberOfRecords){
-        String name = customer.name;
-        Byte age = customer.age;
-        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + ");";
-        try (Connection connection = provider.get();
-             PreparedStatement statement = connection.prepareStatement(register)){
-            while (numberOfRecords > 0){
-                statement.executeUpdate();
-                numberOfRecords--;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void update(Integer id, Customer customer){
         String update = "UPDATE CUSTOMER SET Name = '" + customer.name + "', Age = " + customer.age + " WHERE ID = " + id + ";";
         try (Connection connection = provider.get();
@@ -97,4 +82,22 @@ public class PersistentCustomerRepository implements CustomerRepository {
             e.printStackTrace();
         }
     }
+
+
+    //todo this is just fot the 4-th task to show how to inser large amount of records
+    private void registerLargeNumberOfRecords(Customer customer, Integer numberOfRecords){
+        String name = customer.name;
+        Byte age = customer.age;
+        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + ");";
+        try (Connection connection = provider.get();
+             PreparedStatement statement = connection.prepareStatement(register)){
+            while (numberOfRecords > 0){
+                statement.executeUpdate();
+                numberOfRecords--;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

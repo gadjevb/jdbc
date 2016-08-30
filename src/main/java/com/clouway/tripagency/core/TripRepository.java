@@ -34,7 +34,7 @@ public interface TripRepository {
      *
      * @return List of {@code Trip} trip objects
      */
-    List<Trip> getTripData();
+    List<Trip> getAll();
 
     /**
      * Returns the most visited cities from the Trip table in descending order

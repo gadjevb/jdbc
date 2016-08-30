@@ -21,7 +21,7 @@ public class PersistentTripManagerRepository implements TripManagerRepository {
         this.provider = (ConnectionProvider) provider;
     }
 
-    public List getPeopleInTheSameCity(Date date, String city) {
+    public List<Person> getPeopleInTheSameCity(Date date, String city) {
         List<Person> personList = new ArrayList();
         String peopleInTheSameCity = "SELECT DISTINCT * FROM PEOPLE INNER JOIN TRIP ON PEOPLE.EGN = TRIP.EGN " +
                 "WHERE TRIP.Arrival <= '" + date + "' and TRIP.Department >= '" + date + "' and TRIP.City = '" + city + "';";
