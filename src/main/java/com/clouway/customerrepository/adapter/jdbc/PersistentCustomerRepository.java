@@ -70,24 +70,11 @@ public class PersistentCustomerRepository implements CustomerRepository {
         return customerList;
     }
 
-    public void truncate(){
-        String sequence = "ALTER SEQUENCE customer_id RESTART WITH 1;";
-        String truncate = "TRUNCATE TABLE CUSTOMER, CUSTOMER_HISTORY;";
-        try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sequence);
-            statement.executeUpdate(truncate);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     //todo this is just fot the 4-th task to show how to insert large amount of records
-    private void registerLargeNumberOfRecords(Customer customer, Integer numberOfRecords){
-        String name = customer.name;
-        Integer age = customer.age;
-        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + ");";
+    public void registerLargeNumberOfRecords(Customer customer){
+        Integer numberOfRecords = 100;
+        String register = append(customer);
+
         try (Connection connection = provider.get();
              PreparedStatement statement = connection.prepareStatement(register)){
             while (numberOfRecords > 0){
@@ -99,4 +86,19 @@ public class PersistentCustomerRepository implements CustomerRepository {
         }
     }
 
+    private String append(Customer customer){
+        String name = customer.name;
+        Integer age = customer.age;
+        Integer append = 1;
+        String register = "INSERT INTO CUSTOMER(Name, Age) VALUES('" + name + "'," + age + "),";
+
+        while (append < 9999){
+            register = register + "('" + name + "'," + age + "),";
+            append++;
+        }
+        register = register + "('" + name + "'," + age + ");";
+        register = register + register;
+
+        return register;
+    }
 }

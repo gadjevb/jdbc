@@ -8,9 +8,16 @@ public class Users {
     public final Integer id;
     public final String name;
 
-    public Users(Integer id, String name) {
+    public Users(Integer id, String name){
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override

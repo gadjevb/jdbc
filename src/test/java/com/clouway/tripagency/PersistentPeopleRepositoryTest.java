@@ -43,9 +43,9 @@ public class PersistentPeopleRepositoryTest {
     @Test
     public void happyPath(){
         peopleRepository.register(person1);
-        List<Person> person = peopleRepository.getAll();
+        List<Person> expected = peopleRepository.getAll();
 
-        assertTrue(person.get(0).equals(person1));
+        assertTrue(expected.get(0).equals(person1));
     }
 
     @Test
@@ -53,14 +53,15 @@ public class PersistentPeopleRepositoryTest {
         peopleRepository.register(person1);
         List<Person> person = peopleRepository.getAll();
         peopleRepository.update(new UID(9203174579l), new Person("Jon Doe", new UID(9203174579l), 24, "person1.doe@gmail.com"));
-        List<Person> updatedPerson = peopleRepository.getAll();
+        List<Person> actual = peopleRepository.getAll();
+        Person expected = new Person("Jon Doe", new UID(9203174579l), 24, "person1.doe@gmail.com");
 
         assertTrue(person.get(0).equals(person1));
-        assertTrue(updatedPerson.get(0).equals(new Person("Jon Doe", new UID(9203174579l), 24, "person1.doe@gmail.com")));
+        assertTrue(actual.get(0).equals(expected));
     }
 
     @Test
-    public void getPeopleData(){
+    public void getAll(){
         peopleRepository.register(person1);
         peopleRepository.register(person2);
         List<Person> actual = peopleRepository.getAll();
@@ -76,8 +77,9 @@ public class PersistentPeopleRepositoryTest {
 
         peopleRepository.register(new Person("Sam",new UID(9612128833l), 20,"sam@gmail.com"));
         peopleRepository.register(new Person("Ben",new UID(9507236424l), 21,"ben@gmail.com"));
-        List<Person> people = peopleRepository.getPeopleByFirstLetters("B");
+        List<Person> actual = peopleRepository.getPeopleByFirstLetters("B");
+        List<Person> expected  = Lists.newArrayList(person2, new Person("Ben",new UID(9507236424l), 21,"ben@gmail.com"));
 
-        assertThat(people, is(equalTo(Lists.newArrayList(person2, new Person("Ben",new UID(9507236424l), 21,"ben@gmail.com")))));
+        assertThat(actual, is(equalTo(expected)));
     }
 }

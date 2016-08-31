@@ -6,6 +6,7 @@ import com.clouway.userrepository.core.Address;
 import com.clouway.userrepository.core.Contact;
 import com.clouway.userrepository.core.UserRepository;
 import com.clouway.userrepository.core.Users;
+import com.google.common.collect.Lists;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,48 +23,44 @@ public class PersistentUserRepository implements UserRepository {
         this.provider = provider;
     }
 
-    public List getUsersContent() {
-        List<Users> usersList = new ArrayList();
-        try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM USERS;");
-            while (resultSet.next()) {
-                usersList.add(new Users(resultSet.getInt(1), resultSet.getString(2)));
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return usersList;
+    public List<Users> getUsersContent() {
+        return get("Users");
     }
 
-    public List getContactContent() {
-        List<Contact> contactList = new ArrayList();
-        try (Connection connection = provider.get();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM Contact;");
-            while (resultSet.next()) {
-                contactList.add(new Contact(resultSet.getInt(1), resultSet.getLong(2)));
-            }
-            resultSet.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return contactList;
+    public List<Contact> getContactContent() {
+        return get("Contact");
     }
 
-    public List getAddressContent() {
-        List<Address> addressList = new ArrayList();
+    public List<Address> getAddressContent() {
+        return get("Address");
+    }
+
+    private List get(String tableName){
         try (Connection connection = provider.get();
              Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM ADDRESS;");
-            while (resultSet.next()) {
-                addressList.add(new Address(resultSet.getInt(1), resultSet.getString(2)));
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName + ";");
+            if(tableName.equals("Users")){
+                List<Users> list = new ArrayList();
+                while (resultSet.next()) {
+                    list.add(new Users(resultSet.getInt(1), resultSet.getString(2)));
+                }
+                return list;
+            }else if(tableName.equals("Address")){
+                List<Address> list = new ArrayList();
+                while (resultSet.next()) {
+                    list.add(new Address(resultSet.getInt(1), resultSet.getString(2)));
+                }
+                return list;
+            }else{
+                List<Contact> list = new ArrayList();
+                while (resultSet.next()) {
+                    list.add(new Contact(resultSet.getInt(1), resultSet.getString(2)));
+                }
+                return list;
             }
-            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return addressList;
+        return null;
     }
 }

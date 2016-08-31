@@ -86,18 +86,18 @@ public class PersistentUserRepositoryTest {
 
     @Test
     public void happyPath() {
-        operator.registerUser(new Users(105,"Jon"));
-        operator.registerUser(new Users(106,"Bob"));
-        operator.registerContact(new Contact(105,8878881213l));
-        operator.registerContact(new Contact(106,8123845273l));
-        operator.registerAddress(new Address(105,"str.Ams №123"));
-        operator.registerAddress(new Address(106,"str.Ulver №37"));
+        operator.registerUser(new Users(101,"Jon"));
+        operator.registerUser(new Users(102,"Bob"));
+        operator.registerContact(new Contact(101,"878881213"));
+        operator.registerContact(new Contact(102,"123845273"));
+        operator.registerAddress(new Address(101,"str.Ams №123"));
+        operator.registerAddress(new Address(102,"str.Ulver №37"));
         usersList = userRepository.getUsersContent();
         contactList = userRepository.getContactContent();
         addressList = userRepository.getAddressContent();
 
-        assertThat(usersList, is(equalTo(Lists.newArrayList(new Users(105,"Jon"), new Users(106,"Bob")))));
-        assertThat(contactList, is(equalTo(Lists.newArrayList(new Contact(105,8878881213l), new Contact(106,8123845273l)))));
-        assertThat(addressList, is(equalTo(Lists.newArrayList(new Address(105,"str.Ams №123"), new Address(106,"str.Ulver №37")))));
+        assertThat(usersList, is(equalTo(Lists.newArrayList(new Users(101,"Jon"), new Users(102,"Bob")))));
+        assertThat(contactList, is(equalTo(Lists.newArrayList(new Contact(101,"878881213"), new Contact(102,"123845273")))));
+        assertThat(addressList, is(equalTo(Lists.newArrayList(new Address(101,"str.Ams №123"), new Address(102,"str.Ulver №37")))));
     }
 }

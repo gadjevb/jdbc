@@ -41,9 +41,4 @@ public interface CustomerRepository {
      */
     List getHistoricalRecords(Integer page);
 
-    /**
-     * Truncates all tables
-     */
-    void truncate();
-
 }

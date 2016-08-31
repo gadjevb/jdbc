@@ -46,10 +46,11 @@ public class PersistentTripRepositoryTest {
     public void happyPath(){
         peopleRepository.register(person);
         tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas"));
-        List<Trip> trip = tripRepository.getAll();
+        List<Trip> actual = tripRepository.getAll();
+        Trip expected = new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas");
 
 
-        assertTrue(trip.get(0).equals(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas")));
+        assertTrue(actual.get(0).equals(expected));
     }
 
     @Test
@@ -73,9 +74,10 @@ public class PersistentTripRepositoryTest {
         tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
         tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
         tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,6,6), getDate(2016,6,16),"Vidin"));
-        List<City> cities = tripRepository.getMostVisited();
+        List<City> actual = tripRepository.getMostVisited();
+        List<City> expected = Lists.newArrayList(new City("Turnovo"), new City("Varna"), new City("Vidin"));
 
-        assertThat(cities, is(equalTo(Lists.newArrayList(new City("Turnovo"), new City("Varna"), new City("Vidin")))));
+        assertThat(actual, is(equalTo(expected)));
     }
 
     private Date getDate(Integer year, Integer month, Integer day){
