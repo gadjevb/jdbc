@@ -47,16 +47,19 @@ public class PersistentTripManagerRepositoryTest {
         Person person1 = new Person("Jon", new UID(9712128833l), 19, "jon@gmail.com");
         Person person2 = new Person("Bob", new UID(9807236424l), 18, "bob@gmail.com");
         Person person3 = new Person("Sam", new UID(9612128833l), 20, "sam@gmail.com");
+        Trip trip1 = new Trip(new UID(9712128833l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo");
+        Trip trip2 = new Trip(new UID(9807236424l), getDate(2016,6,3), getDate(2016,6,10),"Turnovo");
+        Trip trip3 = new Trip(new UID(9612128833l), getDate(2016,6,28), getDate(2016,7,8),"Turnovo");
 
         peopleRepository.register(person1);
         peopleRepository.register(person2);
         peopleRepository.register(person3);
-        tripRepository.register(new Trip(new UID(9712128833l), getDate(2016,6,6), getDate(2016,6,16),"Turnovo"));
-        tripRepository.register(new Trip(new UID(9807236424l), getDate(2016,6,3), getDate(2016,6,10),"Turnovo"));
-        tripRepository.register(new Trip(new UID(9612128833l), getDate(2016,6,28), getDate(2016,7,8),"Turnovo"));
+        tripRepository.register(trip1);
+        tripRepository.register(trip2);
+        tripRepository.register(trip3);
         List<Person> people = tripManager.getPeopleInTheSameCity(getDate(2016,6,9),"Turnovo");
 
-        assertThat(people, is(equalTo(Lists.newArrayList(person1, person2))));
+        assertThat(people, is(equalTo(Lists.newArrayList(person2, person1))));
     }
 
     private Date getDate(Integer year, Integer month, Integer day){

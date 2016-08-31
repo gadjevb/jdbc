@@ -58,6 +58,7 @@ public class PersistentTripRepositoryTest {
         peopleRepository.register(person);
         tripRepository.register(new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Burgas"));
         List<Trip> trip = tripRepository.getAll();
+
         tripRepository.update(new UID(9308128484l) ,new Trip(new UID(9308128484l), getDate(2016,8,15), getDate(2016,8,20), "Turnovo"));
         List<Trip> updatedTrip = tripRepository.getAll();
 

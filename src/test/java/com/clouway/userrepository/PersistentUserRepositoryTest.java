@@ -51,9 +51,12 @@ public class PersistentUserRepositoryTest {
         usersList = userRepository.getUsersContent();
         contactList = userRepository.getContactContent();
         addressList = userRepository.getAddressContent();
+        List<Users> expectedUsers = Lists.newArrayList(new Users(103,"Jon"), new Users(104,"Bob"));
+        List<Contact> expectedContacts = Lists.newArrayList(new Contact(103,"878881213"), new Contact(104,"123845273"));
+        List<Address> expectedAddress = Lists.newArrayList(new Address(103,"str.Ams №123"), new Address(104,"str.Ulver №37"));
 
-        assertThat(usersList, is(equalTo(Lists.newArrayList(new Users(103,"Jon"), new Users(104,"Bob")))));
-        assertThat(contactList, is(equalTo(Lists.newArrayList(new Contact(103,"878881213"), new Contact(104,"123845273")))));
-        assertThat(addressList, is(equalTo(Lists.newArrayList(new Address(103,"str.Ams №123"), new Address(104,"str.Ulver №37")))));
+        assertThat(usersList, is(equalTo(expectedUsers)));
+        assertThat(contactList, is(equalTo(expectedContacts)));
+        assertThat(addressList, is(equalTo(expectedAddress)));
     }
 }
