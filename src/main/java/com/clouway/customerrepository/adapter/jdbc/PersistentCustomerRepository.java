@@ -74,9 +74,8 @@ public class PersistentCustomerRepository implements CustomerRepository {
     public void registerLargeNumberOfRecords(Customer customer){
         Integer numberOfRecords = 100;
         String register = append(customer);
-
         try (Connection connection = provider.get();
-             PreparedStatement statement = connection.prepareStatement(register)){
+             PreparedStatement statement = connection.prepareStatement("BEGIN; " + register + " COMMIT;")){
             while (numberOfRecords > 0){
                 statement.executeUpdate();
                 numberOfRecords--;

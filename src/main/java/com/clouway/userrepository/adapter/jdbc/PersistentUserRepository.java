@@ -35,6 +35,39 @@ public class PersistentUserRepository implements UserRepository {
         return get("Address");
     }
 
+    public Integer registerUser(Users user){
+        String register = "INSERT INTO Users VALUES(" + user.id + ",'" + user.name + "');";
+        try (Connection connection = provider.get();
+             PreparedStatement statement = connection.prepareStatement(register)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user.id;
+    }
+
+    public Integer registerContact(Contact contact){
+        String register = "INSERT INTO Contact VALUES(" + contact.id + ",'" + contact.gsm + "');";
+        try (Connection connection = provider.get();
+             PreparedStatement statement = connection.prepareStatement(register)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return contact.id;
+    }
+
+    public Integer registerAddress(Address address){
+        String register = "INSERT INTO Address VALUES(" + address.id + ",'" + address.address + "');";
+        try (Connection connection = provider.get();
+             PreparedStatement statement = connection.prepareStatement(register)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return address.id;
+    }
+
     private List get(String tableName){
         try (Connection connection = provider.get();
              Statement statement = connection.createStatement()) {
